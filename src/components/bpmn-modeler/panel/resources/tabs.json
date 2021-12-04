@@ -1,0 +1,11 @@
+[
+  {
+    "id": "general",
+    "label": "常用",
+    "props": [
+      "id",
+      "name",
+      "documentation"
+    ]
+  }
+]

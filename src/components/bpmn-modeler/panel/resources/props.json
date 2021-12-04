@@ -1,0 +1,26 @@
+[
+  {
+    "name": "id",
+    "label": "id",
+    "type": "string",
+    "allow": [
+      "bpmn:BaseElement"
+    ]
+  },
+  {
+    "name": "name",
+    "label": "名称",
+    "type": "string",
+    "allow": [
+      "bpmn:BaseElement"
+    ]
+  },
+  {
+    "name": "documentation",
+    "label": "文档",
+    "type": "documentation",
+    "allow": [
+      "bpmn:BaseElement"
+    ]
+  }
+]

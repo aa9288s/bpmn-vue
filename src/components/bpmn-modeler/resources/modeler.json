@@ -1,0 +1,11 @@
+{
+  "name": "Modeler",
+  "uri": "http://plantmate.com/modeler",
+  "prefix": "modeler",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "associations": [],
+  "types": [],
+  "emumerations": []
+}
