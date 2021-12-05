@@ -1,6 +1,7 @@
 import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil'
 
 const ElementProperty = function (element, config = {}, modeling, bpmnFactory) {
+    this.id = config.id
     this.name = config.name
     this.label = config.label
     this.type = config.type
@@ -12,26 +13,43 @@ const ElementProperty = function (element, config = {}, modeling, bpmnFactory) {
 }
 
 ElementProperty.prototype.getAttributeValue = function () {
-    return getBusinessObject(this.$element)[this.name]
+    return this.getAttribute(this.name)
 }
 
 ElementProperty.prototype.setAttributeValue = function (value) {
+    this.setAttribute(this.name, value)
+}
+
+ElementProperty.prototype.getAttribute = function (name) {
+    return getBusinessObject(this.$element)[name]
+}
+
+ElementProperty.prototype.setAttribute = function (name, value) {
     const obj = {}
-    obj[this.name] = value
+    obj[name] = value
     this.$modeling.updateProperties(this.$element, obj)
 }
 
 ElementProperty.prototype.getExtension = function () {
-
+    const businessObject = getBusinessObject(this.$element)
+    if (businessObject.extensionElements) {
+        return businessObject.extensionElements.get('values').filter(e => is(e, this.name))
+    }
+    return []
 }
 
-ElementProperty.prototype.setExtension = function (type, props, filter) {
+ElementProperty.prototype.setExtension = function (props) {
     const businessObject = getBusinessObject(this.$element)
     businessObject.extensionElements = businessObject.extensionElements || this.createExtensionElements()
-    const values = businessObject.extensionElements.get('values').filter(e => !is(e, type) || filter && filter(e))
-    const extensionElement = this.createElement(type, props)
-    values.push(extensionElement)
-    businessObject.extensionElements.set('values', values)
+    const extensionElement = this.createElement(this.name, props)
+    let existsElement = businessObject.extensionElements.get('values').filter(e => is(e, this.name))[0]
+    if (existsElement) {
+        Object.keys(existsElement).forEach(key => {
+            existsElement.set(key, props[key])
+        })
+    } else {
+        businessObject.extensionElements.get('values').push(extensionElement)
+    }
 }
 
 ElementProperty.prototype.createExtensionElements = function () {

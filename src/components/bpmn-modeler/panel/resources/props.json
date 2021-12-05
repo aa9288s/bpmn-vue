@@ -4,7 +4,6 @@
     "name": "id",
     "label": "id",
     "type": "string",
-    "isAttr": true,
     "allow": [
       "bpmn:BaseElement"
     ]
@@ -14,7 +13,6 @@
     "name": "name",
     "label": "名称",
     "type": "string",
-    "isAttr": true,
     "allow": [
       "bpmn:BaseElement"
     ]

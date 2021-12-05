@@ -1,11 +1,10 @@
 <template>
   <el-form-item
-      :label="config.label"
+      :label="property.label"
   >
     <el-input
         v-model="stringValue"
-        :placeholder="`请输入${config.label}......`"
-        :type="config.type === 'string'? 'text' : 'textarea'"
+        :placeholder="`请输入${property.label}......`"
         :rows="5"
     ></el-input>
   </el-form-item>
@@ -15,29 +14,20 @@
 export default {
   name: "string",
   props: {
-    config: {
+    property: {
       type: Object,
       default() {
-        return {}
-      }
-    },
-    value: {
-      type: String,
-      default() {
-        return null;
+        return null
       }
     }
-  },
-  data() {
-    return {}
   },
   computed: {
     stringValue: {
       get() {
-        return this.value
+        return this.property.getAttributeValue()
       },
-      set(val) {
-        this.$emit('input', val)
+      set(value) {
+        this.property.setAttributeValue(value)
       }
     }
   }

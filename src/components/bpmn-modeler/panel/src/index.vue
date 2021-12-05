@@ -15,11 +15,9 @@
           label-width="80px"
       >
         <panel-property
-            v-for="prop in activatedTab.props"
-            :key="prop.id"
-            :config="prop"
-            :element="activatedElement"
-            :modeler="{modeling, bpmnFactory}"
+            v-for="property in activatedTab.properties"
+            :key="`panel-property-${property.id}`"
+            :property="property"
         ></panel-property>
       </el-form>
     </el-tab-pane>
@@ -31,6 +29,7 @@ import {is} from 'bpmn-js/lib/util/ModelUtil'
 import panelTabs from '../resources/tabs.json'
 import panelProps from '../resources/props.json'
 import PanelProperty from '../../properties/src/index'
+import ElementProperty from '../../properties/utils/ElementProperty'
 
 export default {
   name: "PropertiesPanel",
@@ -43,8 +42,7 @@ export default {
       modeling: {},
       bpmnFactory: {},
       activatedTabs: [],
-      activatedTabName: '',
-      activatedElement: {}
+      activatedTabName: ''
     }
   },
   mounted() {
@@ -57,22 +55,33 @@ export default {
       })
 
       this.eventBus.on('element.click', event => {
-        console.log(is(event.element, 'bpmn:BaseElement'))
-        console.log(event.element)
         this.activeTabs(event.element)
+      })
+
+      this.eventBus.on('element.changed', event => {
+        if (!is(event.element, 'bpmn:SequenceFlow')) {
+          console.log(event)
+          this.activeTabs(event.element)
+        }
       })
     },
     activeTabs(element) {
-      this.activatedElement = element
       const activatedTabs = []
       panelTabs.filter(tab => tab.allow.filter(type => is(element, type)).length > 0).forEach(tab => {
         const activatedTab = {
           ...tab,
-          props: []
+          props: [],
+          properties: []
         }
         tab.props.forEach(prop => {
           const props = panelProps.filter(panelProp => panelProp.id === prop && panelProp.allow.filter(type => is(element, type)).length > 0)
           activatedTab.props = activatedTab.props.concat(props)
+        })
+        activatedTab.props.forEach(prop => {
+          activatedTab.properties.push(new ElementProperty(element,
+              prop,
+              this.modeling,
+              this.bpmnFactory))
         })
         activatedTabs.push(activatedTab)
       })
