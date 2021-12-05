@@ -1,11 +1,28 @@
 <template>
   <el-tabs
-    class="bpmn-properties-panel"
-    type="border-card">
-    <el-tab-pane label="用户管理">用户管理</el-tab-pane>
-    <el-tab-pane label="配置管理">配置管理</el-tab-pane>
-    <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-    <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+      v-model="activatedTabName"
+      class="bpmn-properties-panel"
+      type="border-card"
+  >
+    <el-tab-pane
+        v-for="(activatedTab) in activatedTabs"
+        :key="activatedTab.id"
+        :name="activatedTab.id"
+        :label="activatedTab.label"
+    >
+      <el-form
+          size="mini"
+          label-width="80px"
+      >
+        <panel-property
+            v-for="prop in activatedTab.props"
+            :key="prop.id"
+            :config="prop"
+            :element="activatedElement"
+            :modeler="{modeling, bpmnFactory}"
+        ></panel-property>
+      </el-form>
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -13,22 +30,29 @@
 import {is} from 'bpmn-js/lib/util/ModelUtil'
 import panelTabs from '../resources/tabs.json'
 import panelProps from '../resources/props.json'
+import PanelProperty from '../../properties/src/index'
 
 export default {
   name: "PropertiesPanel",
-  data () {
+  components: {
+    PanelProperty
+  },
+  data() {
     return {
       eventBus: {},
-      activatedTabs: []
+      modeling: {},
+      bpmnFactory: {},
+      activatedTabs: [],
+      activatedTabName: '',
+      activatedElement: {}
     }
   },
-  mounted () {
+  mounted() {
     this.initial()
   },
   methods: {
-    initial () {
+    initial() {
       this.eventBus.on('root.added', event => {
-        console.log(is(event.element, 'bpmn:BaseElement'))
         this.activeTabs(event.element)
       })
 
@@ -38,17 +62,22 @@ export default {
         this.activeTabs(event.element)
       })
     },
-    activeTabs (element) {
+    activeTabs(element) {
+      this.activatedElement = element
       const activatedTabs = []
-      panelTabs.forEach(tab => {
+      panelTabs.filter(tab => tab.allow.filter(type => is(element, type)).length > 0).forEach(tab => {
         const activatedTab = {
           ...tab,
-          props: panelProps.filter(prop => tab.props.indexOf(prop.id) && prop.allow.filter(e => is(element, e)).length > 0)
+          props: []
         }
+        tab.props.forEach(prop => {
+          const props = panelProps.filter(panelProp => panelProp.id === prop && panelProp.allow.filter(type => is(element, type)).length > 0)
+          activatedTab.props = activatedTab.props.concat(props)
+        })
         activatedTabs.push(activatedTab)
       })
-      console.log(activatedTabs)
       this.activatedTabs = activatedTabs
+      this.activatedTabName = activatedTabs[0].id
     }
   }
 }

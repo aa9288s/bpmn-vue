@@ -1,26 +1,41 @@
 [
   {
+    "id": "id",
     "name": "id",
     "label": "id",
     "type": "string",
+    "isAttr": true,
     "allow": [
       "bpmn:BaseElement"
     ]
   },
   {
+    "id": "name",
     "name": "name",
     "label": "名称",
     "type": "string",
+    "isAttr": true,
     "allow": [
       "bpmn:BaseElement"
     ]
   },
   {
-    "name": "documentation",
+    "id": "documentation",
+    "name": "bpmn:Documentation",
     "label": "文档",
-    "type": "documentation",
+    "type": "text",
+    "isBody": true,
     "allow": [
       "bpmn:BaseElement"
+    ]
+  },
+  {
+    "id": "assignable",
+    "name": "activiti:Assignable",
+    "label": "任务分配",
+    "type": "assignment",
+    "allow": [
+      "bpmn:UserTask"
     ]
   }
 ]

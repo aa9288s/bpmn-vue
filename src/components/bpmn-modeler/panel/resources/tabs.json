@@ -2,10 +2,23 @@
   {
     "id": "general",
     "label": "常用",
+    "allow": [
+      "bpmn:BaseElement"
+    ],
     "props": [
       "id",
       "name",
       "documentation"
+    ]
+  },
+  {
+    "id": "assignment",
+    "label": "任务分配",
+    "allow": [
+      "bpmn:UserTask"
+    ],
+    "props": [
+      "assignable"
     ]
   }
 ]
