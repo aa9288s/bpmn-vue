@@ -16,7 +16,7 @@
       >
         <panel-property
             v-for="property in activatedTab.properties"
-            :key="`panel-property-${property.id}`"
+            :key="`panel-property-${property.name}`"
             :property="property"
         ></panel-property>
       </el-form>
@@ -27,9 +27,9 @@
 <script>
 import {is} from 'bpmn-js/lib/util/ModelUtil'
 import panelTabs from '../resources/tabs.json'
-import panelProps from '../resources/props.json'
+import panelProps from '../resources/props'
 import PanelProperty from '../../properties/src/index'
-import ElementProperty from '../../properties/utils/ElementProperty'
+import ElementWrapper from '../../properties/utils/ElementWrapper'
 
 export default {
   name: "PropertiesPanel",
@@ -60,7 +60,6 @@ export default {
 
       this.eventBus.on('element.changed', event => {
         if (!is(event.element, 'bpmn:SequenceFlow')) {
-          console.log(event)
           this.activeTabs(event.element)
         }
       })
@@ -74,14 +73,24 @@ export default {
           properties: []
         }
         tab.props.forEach(prop => {
-          const props = panelProps.filter(panelProp => panelProp.id === prop && panelProp.allow.filter(type => is(element, type)).length > 0)
+          const props = panelProps.filter(panelProp => panelProp.name === prop && panelProp.allow.filter(type => is(element, type)).length > 0)
           activatedTab.props = activatedTab.props.concat(props)
         })
         activatedTab.props.forEach(prop => {
-          activatedTab.properties.push(new ElementProperty(element,
-              prop,
-              this.modeling,
-              this.bpmnFactory))
+          if (!prop.get) {
+            prop.get = (e) => {
+              return e.getAttribute(prop.name)
+            }
+          }
+          if (!prop.set) {
+            prop.set = (e, value) => {
+              e.setAttribute(prop.name, value)
+            }
+          }
+          activatedTab.properties.push({
+            ...prop,
+            element: new ElementWrapper(element, this.modeling, this.bpmnFactory)
+          })
         })
         activatedTabs.push(activatedTab)
       })

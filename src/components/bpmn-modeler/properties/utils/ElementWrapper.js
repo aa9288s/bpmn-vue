@@ -1,36 +1,27 @@
 import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil'
 
-const ElementProperty = function (element, config = {}, modeling, bpmnFactory) {
-    this.id = config.id
-    this.name = config.name
-    this.label = config.label
-    this.type = config.type
-    this.isBody = config.isBody
-    this.isAttr = config.isAttr
+const ElementWrapper = function (element, modeling, bpmnFactory) {
     this.$element = element
     this.$modeling = modeling
     this.$bpmnFactory = bpmnFactory
 }
 
-ElementProperty.prototype.getAttributeValue = function () {
-    return this.getAttribute(this.name)
-}
-
-ElementProperty.prototype.setAttributeValue = function (value) {
-    this.setAttribute(this.name, value)
-}
-
-ElementProperty.prototype.getAttribute = function (name) {
+ElementWrapper.prototype.getAttribute = function (name) {
     return getBusinessObject(this.$element)[name]
 }
 
-ElementProperty.prototype.setAttribute = function (name, value) {
-    const obj = {}
-    obj[name] = value
-    this.$modeling.updateProperties(this.$element, obj)
+ElementWrapper.prototype.setAttribute = function (name, value) {
+    getBusinessObject(this.$element).set(name, value)
 }
 
-ElementProperty.prototype.getExtension = function () {
+ElementWrapper.prototype.setAttributes = function (attrs) {
+    /* this.$modeling.updateProperties(this.$element, attrs)*/
+    Object.keys(attrs).forEach(key => {
+        getBusinessObject(this.$element)[key] = attrs[key]
+    })
+}
+
+ElementWrapper.prototype.getExtension = function () {
     const businessObject = getBusinessObject(this.$element)
     if (businessObject.extensionElements) {
         return businessObject.extensionElements.get('values').filter(e => is(e, this.name))
@@ -38,7 +29,7 @@ ElementProperty.prototype.getExtension = function () {
     return []
 }
 
-ElementProperty.prototype.setExtension = function (props) {
+ElementWrapper.prototype.setExtension = function (props) {
     const businessObject = getBusinessObject(this.$element)
     businessObject.extensionElements = businessObject.extensionElements || this.createExtensionElements()
     const extensionElement = this.createElement(this.name, props)
@@ -52,12 +43,12 @@ ElementProperty.prototype.setExtension = function (props) {
     }
 }
 
-ElementProperty.prototype.createExtensionElements = function () {
+ElementWrapper.prototype.createExtensionElements = function () {
     return this.createElement('bpmn:ExtensionElements')
 }
 
-ElementProperty.prototype.createElement = function (type, props) {
+ElementWrapper.prototype.createElement = function (type, props) {
     return this.$bpmnFactory.create(type, props)
 }
 
-export default ElementProperty
+export default ElementWrapper

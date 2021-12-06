@@ -236,8 +236,6 @@ export default {
       return this.assignmentType === 'assignee'
     }
   },
-  created() {
-  },
   methods: {
     openDialog() {
       this.dialog.keyword = ''
@@ -309,6 +307,9 @@ export default {
       deep: true,
       handler() {
         const assignment = {}
+        this.typeOptions.forEach(e => {
+          assignment[e.value] = undefined
+        })
         this.assignmentList.forEach(e => {
           if (!assignment[e.type]) {
             assignment[e.type] = e.id
@@ -316,11 +317,10 @@ export default {
             assignment[e.type] += `,${e.id}`
           }
         })
-        console.log(assignment)
-        this.$emit('input', assignment)
+        this.property.set(this.property.element, assignment)
       }
     },
-    value: {
+    property: {
       deep: true,
       handler() {
       }

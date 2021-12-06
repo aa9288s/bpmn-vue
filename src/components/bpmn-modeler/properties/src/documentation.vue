@@ -3,8 +3,9 @@
       :label="property.label"
   >
     <el-input
-        v-model="stringValue"
+        v-model="textValue"
         :placeholder="`请输入${property.label}......`"
+        type="textarea"
         :rows="5"
     ></el-input>
   </el-form-item>
@@ -12,7 +13,7 @@
 
 <script>
 export default {
-  name: "string",
+  name: "TextProperty",
   props: {
     property: {
       type: Object,
@@ -23,15 +24,15 @@ export default {
   },
   data() {
     return {
-      stringValue: ''
+      textValue: ''
     }
   },
   watch: {
-    stringValue(value) {
-      this.property.set(this.property.element, value)
+    textValue(text) {
+      this.property.set(this.property.element, text)
     },
     property() {
-      this.stringValue = this.property.get(this.property.element)
+      this.textValue = this.property.get(this.property.element)
     }
   }
 }
