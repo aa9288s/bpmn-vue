@@ -153,16 +153,10 @@ export default {
     BpmnSelect
   },
   props: {
-    config: {
+    property: {
       type: Object,
       default() {
         return {}
-      }
-    },
-    value: {
-      type: Object,
-      default() {
-        return null;
       }
     }
   },
