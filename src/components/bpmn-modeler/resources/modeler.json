@@ -6,6 +6,131 @@
     "tagAlias": "lowerCase"
   },
   "associations": [],
-  "types": [],
+  "types": [
+    {
+      "name": "Assignee",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "modeler:Assignment"
+        ]
+      },
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "CandidateUser",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "modeler:Assignment"
+        ]
+      },
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "CandidateGroup",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "modeler:Assignment"
+        ]
+      },
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "CandidateRole",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "modeler:Assignment"
+        ]
+      },
+      "properties": [
+        {
+          "name": "id",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Assignment",
+      "superClass": [
+        "Element"
+      ],
+      "meta": {
+        "allowedIn": [
+          "bpmn:UserTask"
+        ]
+      },
+      "properties": [
+        {
+          "name": "assignee",
+          "type": "Assignee"
+        },
+        {
+          "name": "candidateUsers",
+          "type": "CandidateUser",
+          "isMany": true
+        },
+        {
+          "name": "candidateGroups",
+          "type": "CandidateGroup",
+          "isMany": true
+        },
+        {
+          "name": "candidateRoles",
+          "type": "CandidateRole",
+          "isMany": true
+        }
+      ]
+    }
+  ],
   "emumerations": []
 }

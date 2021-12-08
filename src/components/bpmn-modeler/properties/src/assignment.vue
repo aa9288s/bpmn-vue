@@ -60,7 +60,7 @@
               icon="el-icon-delete"
               circle
               type="danger"
-              @click="assignmentList = assignmentList.filter(e => e.id !== scope.row.id)"
+              @click="assignmentList = assignmentList.filter(e => e.type !== scope.row.type || e.id !== scope.row.id)"
           ></el-button>
         </template>
       </el-table-column>
@@ -306,23 +306,42 @@ export default {
     assignmentList: {
       deep: true,
       handler() {
-        const assignment = {}
+        const assignments = {}
         this.typeOptions.forEach(e => {
-          assignment[e.value] = undefined
+          assignments[e.value] = []
         })
         this.assignmentList.forEach(e => {
-          if (!assignment[e.type]) {
-            assignment[e.type] = e.id
-          } else {
-            assignment[e.type] += `,${e.id}`
+          if (!assignments[e.type]) {
+            assignments[e.type] = []
           }
+          assignments[e.type].push({
+            id: e.id,
+            name: e.label
+          })
         })
-        this.property.set(this.property.element, assignment)
+        this.property.set(this.property.element, assignments)
       }
     },
     property: {
       deep: true,
       handler() {
+        /*const assignments = this.property.get(this.property.element)
+        console.log(assignments)
+        const assignmentList = []
+        if (assignments) {
+          Object.keys(assignments).forEach(key => {
+            assignments[key].forEach(e => {
+              assignmentList.push({
+                id: e.id,
+                label: e.name,
+                type: key,
+                typeLabel: this.typeOptions.filter(option => option.value === key)[0].label
+              })
+            })
+          })
+        } else {
+          this.assignmentList = []
+        }*/
       }
     }
   }

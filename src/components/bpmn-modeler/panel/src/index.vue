@@ -55,6 +55,7 @@ export default {
       })
 
       this.eventBus.on('element.click', event => {
+        console.log(event.element)
         this.activeTabs(event.element)
       })
 

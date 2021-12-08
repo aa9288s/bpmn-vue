@@ -15,30 +15,27 @@ ElementWrapper.prototype.setAttribute = function (name, value) {
 }
 
 ElementWrapper.prototype.setAttributes = function (attrs) {
-    /* this.$modeling.updateProperties(this.$element, attrs)*/
     Object.keys(attrs).forEach(key => {
         getBusinessObject(this.$element)[key] = attrs[key]
     })
 }
 
-ElementWrapper.prototype.getExtension = function () {
+ElementWrapper.prototype.getExtension = function (type) {
     const businessObject = getBusinessObject(this.$element)
     if (businessObject.extensionElements) {
-        return businessObject.extensionElements.get('values').filter(e => is(e, this.name))
+        return businessObject.extensionElements.get('values').filter(e => is(e, type))[0]
     }
-    return []
+    return null
 }
 
-ElementWrapper.prototype.setExtension = function (props) {
+ElementWrapper.prototype.setExtension = function (type, props) {
     const businessObject = getBusinessObject(this.$element)
     businessObject.extensionElements = businessObject.extensionElements || this.createExtensionElements()
-    const extensionElement = this.createElement(this.name, props)
-    let existsElement = businessObject.extensionElements.get('values').filter(e => is(e, this.name))[0]
-    if (existsElement) {
-        Object.keys(existsElement).forEach(key => {
-            existsElement.set(key, props[key])
-        })
+    if (!props || !Object.keys(props).length) {
+        businessObject.extensionElements.set('values', businessObject.extensionElements.get('values').filter(e => !is(e, type)))
     } else {
+        const extensionElement = this.createElement(type, props)
+        businessObject.extensionElements.set('values', businessObject.extensionElements.get('values').filter(e => !is(e, type)))
         businessObject.extensionElements.get('values').push(extensionElement)
     }
 }

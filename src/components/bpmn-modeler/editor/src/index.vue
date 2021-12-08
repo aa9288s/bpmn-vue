@@ -93,6 +93,7 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import DiagramXML from '../../resources/diagram.bpmn'
 import ActivitiModdle from '../../resources/activiti.json'
+import ModelerModdle from '../../resources/modeler.json'
 import PropertiesPanelModule from '../../panel'
 import 'bpmn-js/dist/assets/diagram-js.css'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
@@ -123,7 +124,8 @@ export default {
           PropertiesPanelModule
         ],
         moddleExtensions: {
-          activiti: ActivitiModdle
+          activiti: ActivitiModdle,
+          modeler: ModelerModdle
         }
       })
       this.modeling = this.modeler.get('modeling')
