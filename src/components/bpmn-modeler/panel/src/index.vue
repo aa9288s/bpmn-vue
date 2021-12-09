@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import {is} from 'bpmn-js/lib/util/ModelUtil'
+import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil'
 import panelTabs from '../resources/tabs.json'
 import panelProps from '../resources/props'
 import PanelProperty from '../../properties/src/index'
@@ -42,7 +42,8 @@ export default {
       modeling: {},
       bpmnFactory: {},
       activatedTabs: [],
-      activatedTabName: ''
+      activatedTabName: '',
+      element: {}
     }
   },
   mounted() {
@@ -66,6 +67,10 @@ export default {
       })
     },
     activeTabs(element) {
+      if (this.element && this.element.id === element.id && this.element.type !== element.type) {
+        getBusinessObject(element).extensionElements = undefined
+      }
+      this.element = element
       const activatedTabs = []
       panelTabs.filter(tab => tab.allow.filter(type => is(element, type)).length > 0).forEach(tab => {
         const activatedTab = {

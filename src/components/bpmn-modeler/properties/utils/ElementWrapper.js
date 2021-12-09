@@ -30,10 +30,12 @@ ElementWrapper.prototype.getExtension = function (type) {
 
 ElementWrapper.prototype.setExtension = function (type, props) {
     const businessObject = getBusinessObject(this.$element)
-    businessObject.extensionElements = businessObject.extensionElements || this.createExtensionElements()
     if (!props || !Object.keys(props).length) {
-        businessObject.extensionElements.set('values', businessObject.extensionElements.get('values').filter(e => !is(e, type)))
+        if (businessObject.extensionElements) {
+            businessObject.extensionElements.set('values', businessObject.extensionElements.get('values').filter(e => !is(e, type)))
+        }
     } else {
+        businessObject.extensionElements = businessObject.extensionElements || this.createExtensionElements()
         const extensionElement = this.createElement(type, props)
         businessObject.extensionElements.set('values', businessObject.extensionElements.get('values').filter(e => !is(e, type)))
         businessObject.extensionElements.get('values').push(extensionElement)
