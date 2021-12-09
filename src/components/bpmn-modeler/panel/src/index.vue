@@ -70,14 +70,13 @@ export default {
       panelTabs.filter(tab => tab.allow.filter(type => is(element, type)).length > 0).forEach(tab => {
         const activatedTab = {
           ...tab,
-          props: [],
           properties: []
         }
+        let props = []
         tab.props.forEach(prop => {
-          const props = panelProps.filter(panelProp => panelProp.name === prop && panelProp.allow.filter(type => is(element, type)).length > 0)
-          activatedTab.props = activatedTab.props.concat(props)
+          props = props.concat(panelProps.filter(panelProp => panelProp.name === prop && panelProp.allow.filter(type => is(element, type)).length > 0))
         })
-        activatedTab.props.forEach(prop => {
+        props.forEach(prop => {
           if (!prop.get) {
             prop.get = (e) => {
               return e.getAttribute(prop.name)
@@ -96,7 +95,9 @@ export default {
         activatedTabs.push(activatedTab)
       })
       this.activatedTabs = activatedTabs
-      this.activatedTabName = activatedTabs[0].id
+      if (!activatedTabs.filter(tab => tab.id === this.activatedTabName).length) {
+        this.activatedTabName = activatedTabs[0].id
+      }
     }
   }
 }

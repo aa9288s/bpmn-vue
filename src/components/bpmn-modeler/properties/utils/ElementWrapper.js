@@ -11,13 +11,13 @@ ElementWrapper.prototype.getAttribute = function (name) {
 }
 
 ElementWrapper.prototype.setAttribute = function (name, value) {
-    getBusinessObject(this.$element).set(name, value)
+    const attrs = {}
+    attrs[name] = value
+    this.setAttributes(attrs)
 }
 
 ElementWrapper.prototype.setAttributes = function (attrs) {
-    Object.keys(attrs).forEach(key => {
-        getBusinessObject(this.$element)[key] = attrs[key]
-    })
+    this.$modeling.updateProperties(this.$element, attrs)
 }
 
 ElementWrapper.prototype.getExtension = function (type) {

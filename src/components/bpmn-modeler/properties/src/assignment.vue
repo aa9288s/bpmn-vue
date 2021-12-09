@@ -321,28 +321,32 @@ export default {
         })
         this.property.set(this.property.element, assignments)
       }
-    },
-    property: {
-      deep: true,
-      handler() {
-        /*const assignments = this.property.get(this.property.element)
-        console.log(assignments)
-        const assignmentList = []
-        if (assignments) {
-          Object.keys(assignments).forEach(key => {
-            assignments[key].forEach(e => {
-              assignmentList.push({
-                id: e.id,
-                label: e.name,
-                type: key,
-                typeLabel: this.typeOptions.filter(option => option.value === key)[0].label
-              })
-            })
+    }
+  },
+  created() {
+    const assignments = this.property.get(this.property.element)
+    const assignmentList = []
+    if (assignments) {
+      Object.keys(assignments).forEach(key => {
+        if (!this.typeOptions.filter(option => option.value === key).length) {
+          return
+        }
+        let assigment = assignments[key]
+        if (Object.prototype.toString.call(assigment) !== '[object Array]') {
+          assigment = [assigment]
+        }
+        assigment.forEach(e => {
+          assignmentList.push({
+            id: e.id,
+            label: e.name,
+            type: key,
+            typeLabel: this.typeOptions.filter(option => option.value === key)[0].label
           })
-        } else {
-          this.assignmentList = []
-        }*/
-      }
+        })
+      })
+      this.assignmentList = assignmentList;
+    } else {
+      this.assignmentList = []
     }
   }
 }
