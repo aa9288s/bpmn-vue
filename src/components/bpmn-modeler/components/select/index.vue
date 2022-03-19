@@ -1,42 +1,76 @@
 <template>
   <el-select
-      v-model="selectValue"
-      :placeholder="placeholder"
-      size="mini"
+    v-model="selectValue"
+    :placeholder="placeholder"
+    size="mini"
+    :filterable="filterable"
+    :filter-method="filterMethod"
+    :multiple="multiple"
+    :clearable="clearable"
+    @change="onChange"
   >
     <el-option
-        v-for="(option, i) in options"
-        :key="i"
-        :value="option.value"
-        :label="option.label"
+      v-for="(option, i) in options"
+      :key="i"
+      :value="option.value"
+      :label="option.label"
     ></el-option>
   </el-select>
 </template>
 
 <script>
 export default {
-  name: "index",
+  name: "select",
   props: {
     value: null,
     placeholder: null,
     options: {
       type: Array,
-      default() {
+      default () {
         return []
       }
-    }
+    },
+    filterable: {
+      type: Boolean,
+      default () {
+        return false;
+      }
+    },
+    filterMethod: {
+      type: Function,
+      default () {
+        return null
+      }
+    },
+    multiple: {
+      type: Boolean,
+      default () {
+        return false;
+      }
+    },
+    clearable: {
+      type: Boolean,
+      default () {
+        return false;
+      }
+    },
   },
-  data() {
+  data () {
     return {}
   },
   computed: {
     selectValue: {
-      get() {
+      get () {
         return this.value
       },
-      set(value) {
+      set (value) {
         this.$emit('input', value)
       }
+    }
+  },
+  methods: {
+    onChange (val) {
+      this.$emit('change', val)
     }
   }
 }

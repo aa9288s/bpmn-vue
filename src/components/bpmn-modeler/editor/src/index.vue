@@ -4,75 +4,75 @@
       <div class="bpmn-editor-header-btn">
         <div>
           <el-tooltip
-              class="item"
-              effect="dark"
-              content="自适应屏幕"
-              placement="bottom"
+            class="item"
+            effect="dark"
+            content="自适应屏幕"
+            placement="bottom"
           >
             <el-button
-                size="mini"
-                icon="el-icon-rank"
-                @click="fitViewport"
+              size="mini"
+              icon="el-icon-rank"
+              @click="fitViewport"
             ></el-button>
           </el-tooltip>
 
           <el-tooltip
-              class="item"
-              effect="dark"
-              content="放大"
-              placement="bottom"
+            class="item"
+            effect="dark"
+            content="放大"
+            placement="bottom"
           >
             <el-button
-                size="mini"
-                icon="el-icon-zoom-in"
-                @click="zoomIn"
+              size="mini"
+              icon="el-icon-zoom-in"
+              @click="zoomIn"
             ></el-button>
           </el-tooltip>
 
           <el-tooltip
-              class="item"
-              effect="dark"
-              content="缩小"
-              placement="bottom"
+            class="item"
+            effect="dark"
+            content="缩小"
+            placement="bottom"
           >
             <el-button
-                size="mini"
-                icon="el-icon-zoom-out"
-                @click="zoomOut"
+              size="mini"
+              icon="el-icon-zoom-out"
+              @click="zoomOut"
             ></el-button>
           </el-tooltip>
 
           <el-tooltip
-              class="item"
-              effect="dark"
-              content="后退"
-              placement="bottom"
+            class="item"
+            effect="dark"
+            content="后退"
+            placement="bottom"
           >
             <el-button
-                size="mini"
-                icon="el-icon-back"
-                @click="undo"
+              size="mini"
+              icon="el-icon-back"
+              @click="undo"
             ></el-button>
           </el-tooltip>
 
           <el-tooltip
-              class="item"
-              effect="dark"
-              content="前进"
-              placement="bottom"
+            class="item"
+            effect="dark"
+            content="前进"
+            placement="bottom"
           >
             <el-button
-                size="mini"
-                icon="el-icon-right"
-                @click="redo"
+              size="mini"
+              icon="el-icon-right"
+              @click="redo"
             ></el-button>
           </el-tooltip>
         </div>
         <div>
           <el-button
-              size="mini"
-              icon="el-icon-download"
-              @click="downloadXML"
+            size="mini"
+            icon="el-icon-download"
+            @click="downloadXML"
           >下载
           </el-button>
         </div>
@@ -82,25 +82,28 @@
       <el-main class="bpmn-editor-body-main">
         <div class="canvas" id="js-canvas"></div>
       </el-main>
-      <el-aside width="400px" class="bpmn-editor-panel">
-        <div class="properties-panel-parent" id="js-properties-panel"></div>
-      </el-aside>
     </el-container>
   </el-container>
 </template>
 
 <script>
 import BpmnModeler from 'bpmn-js/lib/Modeler'
+import CustomPaletteProvider from '../../palette/index'
+import CustomContextPadProvider from '../../contextpad/index'
+import CustomPopupMenu from '../../popup-menu/index'
+import CustomLabelEditing from '../../label-editing/index'
 import DiagramXML from '../../resources/diagram.bpmn'
 import ActivitiModdle from '../../resources/activiti.json'
-import ModelerModdle from '../../resources/modeler.json'
-import PropertiesPanelModule from '../../panel'
-import 'bpmn-js/dist/assets/diagram-js.css'
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
+import CustomRules from '../../rules/index'
+import CustomPropertiesPanel from '../../properties-panel'
+
+import "bpmn-js/dist/assets/diagram-js.css"
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css"
+import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css"
 
 export default {
   name: "BpmnEditor",
-  data() {
+  data () {
     return {
       modeler: {},
       modeling: {},
@@ -108,24 +111,32 @@ export default {
       commandStack: {}
     }
   },
-  created() {
+  created () {
   },
-  mounted() {
+  mounted () {
     this.initial()
   },
   methods: {
-    initial() {
+    initial () {
       this.modeler = new BpmnModeler({
         container: '#js-canvas',
         propertiesPanel: {
-          parent: '#js-properties-panel'
+          parent: '#js-properties-panel',
+          type: 'activiti'
+        },
+        keyboard: {
+          bindTo: document
         },
         additionalModules: [
-          PropertiesPanelModule
+          CustomPropertiesPanel,
+          CustomPaletteProvider,
+          CustomContextPadProvider,
+          CustomPopupMenu,
+          CustomLabelEditing,
+          CustomRules
         ],
         moddleExtensions: {
-          activiti: ActivitiModdle,
-          modeler: ModelerModdle
+          activiti: ActivitiModdle
         }
       })
       this.modeling = this.modeler.get('modeling')
@@ -133,7 +144,7 @@ export default {
       this.commandStack = this.modeler.get('commandStack')
       this.createNewDiagram()
     },
-    createNewDiagram() {
+    createNewDiagram () {
       this.openDiagram(DiagramXML).then(() => {
         this.modeling.updateProperties(this.canvas.getRootElement(), {
           id: 'Process_' + Math.random().toString(36).slice(-8)
@@ -141,11 +152,11 @@ export default {
         this.fitViewport()
       })
     },
-    openDiagram(diagramXML) {
+    openDiagram (diagramXML) {
       return this.modeler.importXML(diagramXML)
     },
-    downloadXML() {
-      this.modeler.saveXML({format: true}).then(res => {
+    downloadXML () {
+      this.modeler.saveXML({ format: true }).then(res => {
         if (res && res.xml) {
           console.log(res.xml)
           const link = document.createElement('a')
@@ -155,19 +166,19 @@ export default {
         }
       })
     },
-    fitViewport() {
+    fitViewport () {
       this.canvas.zoom('fit-viewport')
     },
-    zoomIn() {
+    zoomIn () {
       this.canvas.zoom(this.canvas.zoom() + 0.2)
     },
-    zoomOut() {
+    zoomOut () {
       this.canvas.zoom(this.canvas.zoom() - 0.2)
     },
-    redo() {
+    redo () {
       this.commandStack.redo()
     },
-    undo() {
+    undo () {
       this.commandStack.undo()
     }
   }
