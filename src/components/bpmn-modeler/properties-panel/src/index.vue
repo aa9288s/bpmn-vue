@@ -37,7 +37,11 @@
           ></task-assignment-property>
         </el-tab-pane>
         <el-tab-pane name="TaskListener" label="任务监听器" v-if="is(element, 'bpmn:UserTask')">
-          <task-listener-property v-model="businessObject"></task-listener-property>
+          <task-listener-property
+            v-model="businessObject"
+            :bpmn-factory="bpmnFactory"
+            :panel-type="config.type"
+          ></task-listener-property>
         </el-tab-pane>
       </el-tabs>
     </el-form>

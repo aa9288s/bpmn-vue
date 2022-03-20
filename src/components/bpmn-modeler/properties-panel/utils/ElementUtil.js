@@ -30,3 +30,38 @@ export function getExtensionProperties (businessObject, ids = [], prefix = 'acti
   }
   return []
 }
+
+export function addTaskListeners (businessObject = {}, listenerObjs = {}, bpmnFactory = {}, prefix = 'activiti') {
+  const listenerBpmnName = `${prefix}:TaskListener`
+  const fieldBpmnName = `${prefix}:Field`
+
+  const extensionElements = businessObject['extensionElements'] || bpmnFactory.create('bpmn:ExtensionElements', { values: [] })
+  // 剔除重复数据
+  extensionElements.values = extensionElements.values.filter(e => e.$type !== listenerBpmnName)
+
+  listenerObjs.forEach(listenerObj => {
+    listenerObj.fields = listenerObj.fields.map(e => {
+      return bpmnFactory.create(fieldBpmnName, e)
+    })
+    extensionElements.values.push(bpmnFactory.create(listenerBpmnName, listenerObj))
+  })
+  /*{
+    id: listener.id,
+      class: listener.class,
+    expression: listener.expression,
+    delegateExpression: listener.delegateExpression,
+    fields: []
+  }*/
+
+  businessObject.extensionElements = extensionElements
+}
+
+export function getTaskListeners (businessObject, prefix = 'activiti') {
+  const listenerBpmnName = `${prefix}:TaskListener`
+
+  const extensionElements = businessObject['extensionElements']
+  if (extensionElements && extensionElements.values) {
+    return extensionElements.values.filter(e => e.$type === listenerBpmnName)
+  }
+  return []
+}
