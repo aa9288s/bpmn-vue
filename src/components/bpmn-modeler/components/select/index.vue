@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "select",
+  name: "BpmnSelect",
   props: {
     value: null,
     placeholder: null,

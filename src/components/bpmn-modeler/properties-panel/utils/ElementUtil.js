@@ -45,13 +45,6 @@ export function addTaskListeners (businessObject = {}, listenerObjs = {}, bpmnFa
     })
     extensionElements.values.push(bpmnFactory.create(listenerBpmnName, listenerObj))
   })
-  /*{
-    id: listener.id,
-      class: listener.class,
-    expression: listener.expression,
-    delegateExpression: listener.delegateExpression,
-    fields: []
-  }*/
 
   businessObject.extensionElements = extensionElements
 }
