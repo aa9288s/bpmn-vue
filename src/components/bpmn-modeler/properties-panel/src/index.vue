@@ -11,22 +11,22 @@
       >
         <el-tab-pane name="Normal" label="基础属性">
           <el-form-item label="id">
-            <string-property v-model="businessObject.id"></string-property>
+            <string-property v-model="businessObject.id"/>
           </el-form-item>
 
           <el-form-item label="名称">
-            <string-property v-model="businessObject.name"></string-property>
+            <string-property v-model="businessObject.name"/>
           </el-form-item>
 
           <el-form-item label="关联的表单" v-if="is(element, 'bpmn:UserTask')">
-            <task-form-property v-model="businessObject.formKey"></task-form-property>
+            <task-form-property v-model="businessObject.formKey"/>
           </el-form-item>
 
           <el-form-item label="文档">
             <documentation-property
               v-model="businessObject.documentation"
               :bpmn-factory="bpmnFactory"
-            ></documentation-property>
+            />
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="Assignment" label="任务分派" v-if="is(element, 'bpmn:UserTask')">
@@ -34,14 +34,17 @@
             v-model="businessObject"
             :panel-type="config.type"
             :bpmn-factory="bpmnFactory"
-          ></task-assignment-property>
+          />
         </el-tab-pane>
         <el-tab-pane name="TaskListener" label="任务监听器" v-if="is(element, 'bpmn:UserTask')">
           <task-listener-property
             v-model="businessObject"
             :bpmn-factory="bpmnFactory"
             :panel-type="config.type"
-          ></task-listener-property>
+          />
+        </el-tab-pane>
+        <el-tab-pane name="MultiInstance" label="多实例" v-if="isMultiInstance(element)">
+          <multi-instance-property v-model="businessObject" :bpmn-factory="bpmnFactory"/>
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -61,6 +64,7 @@ import DocumentationProperty from '../properties/documentation-property'
 import TaskFormProperty from '../properties/task-form-property'
 import TaskAssignmentProperty from '../properties/task-assignment-property'
 import TaskListenerProperty from '../properties/task-listener-property'
+import MultiInstanceProperty from '../properties/multi-instance-property'
 
 export default {
   name: "PropertiesPanel",
@@ -69,7 +73,8 @@ export default {
     DocumentationProperty,
     TaskFormProperty,
     TaskAssignmentProperty,
-    TaskListenerProperty
+    TaskListenerProperty,
+    MultiInstanceProperty
   },
   data () {
     return {
@@ -115,6 +120,10 @@ export default {
     },
     cancel () {
       this.panelVisible = false
+    },
+    isMultiInstance (element) {
+      const elementTypes = ['bpmn:UserTask']
+      return elementTypes.filter(e => is(element, e)).length
     }
   }
 }
