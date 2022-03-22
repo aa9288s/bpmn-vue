@@ -36,6 +36,9 @@
             :bpmn-factory="bpmnFactory"
           />
         </el-tab-pane>
+        <el-tab-pane name="MultiInstance" label="多实例" v-if="isMultiInstance(element)">
+          <multi-instance-property v-model="businessObject" :bpmn-factory="bpmnFactory"/>
+        </el-tab-pane>
         <el-tab-pane name="TaskListener" label="任务监听器" v-if="is(element, 'bpmn:UserTask')">
           <task-listener-property
             v-model="businessObject"
@@ -43,8 +46,12 @@
             :panel-type="config.type"
           />
         </el-tab-pane>
-        <el-tab-pane name="MultiInstance" label="多实例" v-if="isMultiInstance(element)">
-          <multi-instance-property v-model="businessObject" :bpmn-factory="bpmnFactory"/>
+        <el-tab-pane name="ExecutionListener" label="执行监听器" v-if="isExecutionListener(element)">
+          <execution-listener-property
+            v-model="businessObject"
+            :bpmn-factory="bpmnFactory"
+            :panel-type="config.type"
+          />
         </el-tab-pane>
       </el-tabs>
     </el-form>
@@ -65,6 +72,7 @@ import TaskFormProperty from '../properties/task-form-property'
 import TaskAssignmentProperty from '../properties/task-assignment-property'
 import TaskListenerProperty from '../properties/task-listener-property'
 import MultiInstanceProperty from '../properties/multi-instance-property'
+import ExecutionListenerProperty from "../properties/execution-listener-property"
 
 export default {
   name: "PropertiesPanel",
@@ -74,7 +82,8 @@ export default {
     TaskFormProperty,
     TaskAssignmentProperty,
     TaskListenerProperty,
-    MultiInstanceProperty
+    MultiInstanceProperty,
+    ExecutionListenerProperty
   },
   data () {
     return {
@@ -122,8 +131,33 @@ export default {
       this.panelVisible = false
     },
     isMultiInstance (element) {
-      const elementTypes = ['bpmn:UserTask']
-      return elementTypes.filter(e => is(element, e)).length
+      const allowIn = ['bpmn:UserTask']
+      return allowIn.filter(e => is(element, e)).length
+    },
+    isExecutionListener (element) {
+      const allowIn = [
+        "bpmn:Task",
+        "bpmn:ServiceTask",
+        "bpmn:UserTask",
+        "bpmn:BusinessRuleTask",
+        "bpmn:ScriptTask",
+        "bpmn:ReceiveTask",
+        "bpmn:ManualTask",
+        "bpmn:ExclusiveGateway",
+        "bpmn:SequenceFlow",
+        "bpmn:ParallelGateway",
+        "bpmn:InclusiveGateway",
+        "bpmn:EventBasedGateway",
+        "bpmn:StartEvent",
+        "bpmn:IntermediateCatchEvent",
+        "bpmn:IntermediateThrowEvent",
+        "bpmn:EndEvent",
+        "bpmn:BoundaryEvent",
+        "bpmn:CallActivity",
+        "bpmn:SubProcess",
+        "bpmn:Process"
+      ]
+      return allowIn.filter(e => is(element, e)).length
     }
   }
 }

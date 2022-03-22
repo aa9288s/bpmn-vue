@@ -58,3 +58,32 @@ export function getTaskListeners (businessObject, prefix = 'activiti') {
   }
   return []
 }
+
+
+export function addExecutionListeners (businessObject = {}, listenerObjs = {}, bpmnFactory = {}, prefix = 'activiti') {
+  const listenerBpmnName = `${prefix}:ExecutionListener`
+  const fieldBpmnName = `${prefix}:Field`
+
+  const extensionElements = businessObject['extensionElements'] || bpmnFactory.create('bpmn:ExtensionElements', { values: [] })
+  // 剔除重复数据
+  extensionElements.values = extensionElements.values.filter(e => e.$type !== listenerBpmnName)
+
+  listenerObjs.forEach(listenerObj => {
+    listenerObj.fields = listenerObj.fields.map(e => {
+      return bpmnFactory.create(fieldBpmnName, e)
+    })
+    extensionElements.values.push(bpmnFactory.create(listenerBpmnName, listenerObj))
+  })
+
+  businessObject.extensionElements = extensionElements
+}
+
+export function getExecutionListeners (businessObject, prefix = 'activiti') {
+  const listenerBpmnName = `${prefix}:ExecutionListener`
+
+  const extensionElements = businessObject['extensionElements']
+  if (extensionElements && extensionElements.values) {
+    return extensionElements.values.filter(e => e.$type === listenerBpmnName)
+  }
+  return []
+}
