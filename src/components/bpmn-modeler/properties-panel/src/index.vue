@@ -36,6 +36,13 @@
             :bpmn-factory="bpmnFactory"
           />
         </el-tab-pane>
+        <el-tab-pane name="ServiceTaskLike" label="服务配置" v-if="is(element, 'bpmn:ServiceTask')">
+          <service-task-like-property
+            v-model="businessObject"
+            :bpmn-factory="bpmnFactory"
+            :panel-type="config.type"
+          />
+        </el-tab-pane>
         <el-tab-pane name="MultiInstance" label="多实例" v-if="isMultiInstance(element)">
           <multi-instance-property v-model="businessObject" :bpmn-factory="bpmnFactory"/>
         </el-tab-pane>
@@ -73,6 +80,7 @@ import TaskAssignmentProperty from '../properties/task-assignment-property'
 import TaskListenerProperty from '../properties/task-listener-property'
 import MultiInstanceProperty from '../properties/multi-instance-property'
 import ExecutionListenerProperty from "../properties/execution-listener-property"
+import ServiceTaskLikeProperty from '../properties/service-task-like-property'
 
 export default {
   name: "PropertiesPanel",
@@ -83,7 +91,8 @@ export default {
     TaskAssignmentProperty,
     TaskListenerProperty,
     MultiInstanceProperty,
-    ExecutionListenerProperty
+    ExecutionListenerProperty,
+    ServiceTaskLikeProperty
   },
   data () {
     return {

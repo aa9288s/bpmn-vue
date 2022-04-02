@@ -87,3 +87,25 @@ export function getExecutionListeners (businessObject, prefix = 'activiti') {
   }
   return []
 }
+
+export function getExtensionElements (businessObject, type) {
+  const extensionElements = businessObject['extensionElements']
+  if (extensionElements && extensionElements.values) {
+    return extensionElements.values.filter(e => e.$type === type)
+  }
+  return []
+}
+
+export function addExtensionElements (businessObject, attrs, type, bpmnFactory) {
+  const extensionElements = businessObject['extensionElements'] || bpmnFactory.create('bpmn:ExtensionElements', { values: [] })
+  // 剔除重复数据
+  extensionElements.values = extensionElements.values.filter(e => e.$type !== type)
+
+  if (attrs && attrs.length) {
+    extensionElements.values = extensionElements.values.concat(attrs.map(attr => {
+      return bpmnFactory.create(type, attr)
+    }))
+  }
+
+  businessObject.extensionElements = extensionElements
+}
